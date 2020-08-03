@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task/issues"
   },
-  "homepage": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task#readme"
+  "homepage": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task#readme",
+  "dependencies": {
+    "typescript": "^3.9.7"
+  }
 }
