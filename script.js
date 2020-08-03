@@ -33,36 +33,44 @@ function getFirstTwoCard(deckOfCard) {
   xmlHttp.onload = function() {
     if(this.status === 200){
       const deck = JSON.parse(this.responseText);
+      let sumValuesCards = 0;
       let output = '';
+      let score = '';
 
-      const srcCard1 = deck.cards[0].image;
-      const srcCard2 = deck.cards[1].image;
-      const valueCard1 = deck.cards[0].value;
-      const valueCard2 = deck.cards[1].value;
-      
+      for(let i = 0; i < deck.cards.length; i++) {
+        const srcCard = deck.cards[i].image;
+        const valueCard = deck.cards[i].value;
+        let numValueCard;
 
-      if(deck.success === true) {
-        output += `
-        <div class="row">
-          <div class="col-6">
-            <div class="card-body">
-              <h5 class="card-title">Value: ${valueCard1}</h5>
-              <a class="card-text"><img src="${srcCard1}"></a>      
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="card-body">
-              <h5 class="card-title">Value: ${valueCard2}</h5>
-              <a class="card-text"><img src="${srcCard2}"></a>       
-            </div>
-          </div>          
-        </div>
-        `        
-      } else {
-        `<li>Something went wrong!</li>`
+        const row = document.createElement('tr');
+        row.className = 'table-body-content'
+        row.innerHTML = `
+        <td><img src="${srcCard + ' '}"></td>      
+        `
+        document.getElementById('output').appendChild(row);
+
+        if(valueCard === 'JACK'){
+          numValueCard = 2;
+        } else if (valueCard === 'QUEEN') {
+          numValueCard = 3;
+        } else if (valueCard === 'KING') {
+          numValueCard = 4;
+        } else if (valueCard === 'ACE') {
+          numValueCard = 11; 
+        } else {
+          numValueCard = parseInt(valueCard)
+        }
+    
+        sumValuesCards += numValueCard        
       }
-      document.querySelector('.output').innerHTML = output;
 
+      const scoreCards = document.createElement('div');
+      scoreCards.className = 'card-body';
+      scoreCards.innerHTML = `
+      <h5 class="card-title">Your score: </h5>
+      <p>${sumValuesCards}</p>
+      `
+      document.getElementById('score').appendChild(scoreCards)
     }
   }
 
