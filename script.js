@@ -41,6 +41,10 @@ function getPlayerFirstTwoCard(deckId) {
       rowPlayer.className = 'table-body-content player'
       document.getElementById('playerCards').appendChild(rowPlayer);
 
+      if(deck.cards[0].value == 'ACE' && deck.cards[1].value == 'ACE') {
+        showModalAce()
+      }
+
       for(let i = 0; i < deck.cards.length; i++) {
         const srcCard = deck.cards[i].image;
         const valueCard = deck.cards[i].value;
@@ -207,7 +211,7 @@ function drawDealerCard(deckId) {
 
   const xmlHttp = new XMLHttpRequest();
 
-  xmlHttp.open("GET", urlTakenCard, true);
+  xmlHttp.open("GET", urlTakenCard, false);
 
   xmlHttp.onload = function() {
     if(this.status === 200) {
@@ -243,11 +247,13 @@ function drawDealerCard(deckId) {
     }
   }
 
-  xmlHttp.send();
+  xmlHttp.send();  
 }
 
 function gameEnd(deckId) {
   drawDealerCard(deckId)
+  showModal()
+
 }
 
 function showModal() {
@@ -285,6 +291,38 @@ function printScore() {
   if(cardPlayerValueSum >= 22) {
     return "You lose";
   } else if (cardPlayerValueSum == 21) {
-    return "You win";
-  } 
+    return "You win!";
+  } else if(cardPlayerValueSum > cardDealerValueSum) {
+    return "You win!";
+  } else if(cardPlayerValueSum < cardDealerValueSum) {
+    return "You lose";
+  } else if(cardPlayerValueSum == cardDealerValueSum) {
+    return "Push";
+  }
+}
+
+function showModalAce() {
+  const cardPlayerValueSum = document.getElementById('playerScore').innerHTML;
+  const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
+  const modalRefresh = document.createElement('div');
+  modalRefresh.className = 'modal fade show';
+  modalRefresh.setAttribute("id", "refreshModal"); 
+  modalRefresh.innerHTML = `
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Refresh game</h5>
+      </div>
+      <div class="modal-body">
+        <p>${cardPlayerValueSum}</p>
+        <p>${cardDealerValueSum}</p>
+        <p>You win!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
+      </div>
+    </div>
+  </div>
+  `
+  document.querySelector('.container').appendChild(modalRefresh)
 }
