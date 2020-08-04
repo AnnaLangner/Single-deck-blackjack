@@ -1,0 +1,14 @@
+.modal {
+  display: block;
+  background-color: transparent;
+  text-align: center;
+  padding-top: 100px;
+}
+
+.modal-header {
+  display: block;
+}
+
+.modal-footer {
+  display: block;  
+}

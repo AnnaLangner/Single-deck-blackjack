@@ -77,6 +77,8 @@ function getPlayerFirstTwoCard(deckId) {
       //Create buttons to continue the game and end the game.
       const btnPlayerTakeCard = document.createElement('button');
       btnPlayerTakeCard.onclick = function() {drawPlayerCard(deckId)};
+      btnPlayerTakeCard.setAttribute("data-toggle","modal")
+      btnPlayerTakeCard.setAttribute("data-target", "#refreshModal")
       btnPlayerTakeCard.innerHTML = 'Player take the card';
       btnPlayerTakeCard.className = 'btn btn-primary btn-lg';
       btnPlayerTakeCard.setAttribute('type','button');
@@ -188,6 +190,12 @@ function drawPlayerCard(deckId) {
       let cardValueSum = document.getElementById('scorePlayer').innerHTML;     
       let cardNewValueSum = parseInt(cardValueSum) + cardNewValueNum;  
       document.getElementById('scorePlayer').innerHTML = `${cardNewValueSum}`;
+
+      if(cardNewValueSum >= 22) {
+        showModal()
+      } else if (cardNewValueSum == 21){
+        showModal()
+      }     
     }
   }
 
@@ -207,26 +215,31 @@ function drawDealerCard(deckId) {
       const cardNewSrc = deck.cards[0].image;
       const cardNewValue = deck.cards[0].value;
       let cardNewValueNum;
+      
+      
+        const cardNew = document.createElement('td');
+        cardNew.innerHTML = `<img src="${cardNewSrc + ' '}">`;
+        document.querySelector('.dealer').appendChild(cardNew);
 
-      const cardNew = document.createElement('td');
-      cardNew.innerHTML = `<img src="${cardNewSrc + ' '}">`;
-      document.querySelector('.dealer').appendChild(cardNew);
+        if(cardNewValue === 'JACK'){
+          cardNewValueNum = 2;
+        } else if (cardNewValue === 'QUEEN') {
+          cardNewValueNum = 3;
+        } else if (cardNewValue === 'KING') {
+          cardNewValueNum = 4;
+        } else if (cardNewValue === 'ACE') {
+          cardNewValueNum = 11; 
+        } else {
+          cardNewValueNum = parseInt(cardNewValue)
+        }
+    
+        let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
+        let cardNewValueSum = parseInt(cardValueSum) + cardNewValueNum;  
+        document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;      
 
-      if(cardNewValue === 'JACK'){
-        cardNewValueNum = 2;
-      } else if (cardNewValue === 'QUEEN') {
-        cardNewValueNum = 3;
-      } else if (cardNewValue === 'KING') {
-        cardNewValueNum = 4;
-      } else if (cardNewValue === 'ACE') {
-        cardNewValueNum = 11; 
-      } else {
-        cardNewValueNum = parseInt(cardNewValue)
-      }
-  
-      let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
-      let cardNewValueSum = parseInt(cardValueSum) + cardNewValueNum;  
-      document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;
+      if(cardNewValueSum < 17) {
+        drawDealerCard(deckId)
+      }         
     }
   }
 
@@ -234,5 +247,44 @@ function drawDealerCard(deckId) {
 }
 
 function gameEnd(deckId) {
-  console.log('Im out')
+  drawDealerCard(deckId)
+}
+
+function showModal() {
+  const cardPlayerValueSum = document.getElementById('playerScore').innerHTML;
+  const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
+  const modalRefresh = document.createElement('div');
+  modalRefresh.className = 'modal fade show';
+  modalRefresh.setAttribute("id", "refreshModal"); 
+  modalRefresh.innerHTML = `
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Refresh game</h5>
+      </div>
+      <div class="modal-body">
+        <p>${cardPlayerValueSum}</p>
+        <p>${cardDealerValueSum}</p>
+        <p>${printScore()}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
+      </div>
+    </div>
+  </div>
+  `
+  document.querySelector('.container').appendChild(modalRefresh)
+}
+
+function printScore() {
+  const cardPlayerValueSum = document.getElementById('scorePlayer').textContent;
+  const cardDealerValueSum = document.getElementById('scoreDealer').textContent;
+  console.log(cardPlayerValueSum)
+  console.log(cardDealerValueSum)
+
+  if(cardPlayerValueSum >= 22) {
+    return "You lose";
+  } else if (cardPlayerValueSum == 21) {
+    return "You win";
+  } 
 }
