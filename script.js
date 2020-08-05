@@ -27,30 +27,6 @@ function getShuffle(e) {
   e.preventDefault();
 }
 
-function createButtons(deckId) {
-  const btnPlayerTakeCard = document.createElement('button');
-  btnPlayerTakeCard.className = 'btn btn-primary btn-lg';
-  btnPlayerTakeCard.innerHTML = 'Hit the card';
-  btnPlayerTakeCard.onclick = function() {drawCard(deckId, true)};
-  btnPlayerTakeCard.setAttribute('id', 'btnCardHit')
-  btnPlayerTakeCard.setAttribute("data-toggle","modal")
-  btnPlayerTakeCard.setAttribute("data-target", "#refreshModal")      
-  btnPlayerTakeCard.setAttribute('type','button');      
-
-  const btnPlayerGameEnd = document.createElement('button');
-  btnPlayerGameEnd.className = 'btn btn-secondary btn-lg'; 
-  btnPlayerGameEnd.innerHTML = 'stand the game'; 
-  btnPlayerGameEnd.onclick = function() {standGame(deckId)};    
-  btnPlayerGameEnd.setAttribute('type','button');
-
-  const playerContinuePlaying = document.createElement('div');
-  playerContinuePlaying.className = 'card-body';
-  playerContinuePlaying.appendChild(btnPlayerTakeCard);
-  playerContinuePlaying.appendChild(btnPlayerGameEnd);
-
-  document.getElementById('btnOutput').appendChild(playerContinuePlaying);
-}
-
 function getFirstTwoCards(deckId, isPlayer) {
   const urlFirstTwoCard = `${baseUrl}${deckId}/draw/?count=2`
 
@@ -73,7 +49,7 @@ function getFirstTwoCards(deckId, isPlayer) {
       }      
 
       if(isPlayer && deck.cards[0].value == 'ACE' && deck.cards[1].value == 'ACE') {
-        showModalAce()
+        showModal(deckId, true)
       }
 
       for(let i = 0; i < deck.cards.length; i++) {
@@ -139,19 +115,19 @@ function drawCard(deckId, isPlayer) {
         let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
         document.getElementById('scorePlayer').innerHTML = `${cardNewValueSum}`;
         if(cardNewValueSum >= 22) {
-          drawCard(deckId);
-          showModal(deckId);        
+          drawCard(deckId, true);
+          showModal(deckId, false);        
           return;
         } else if (cardNewValueSum == 21){
-          drawCard(deckId);
-          showModal(deckId);
+          drawCard(deckId, true);
+          showModal(deckId, false);
         }
       } else {
         let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
         let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
         document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;
         if(cardNewValueSum < 17) {
-          drawCard(deckId);
+          drawCard(deckId, false);
         } 
       }   
     }
@@ -160,9 +136,33 @@ function drawCard(deckId, isPlayer) {
   xmlHttp.send();
 }
 
+function createButtons(deckId) {
+  const btnPlayerTakeCard = document.createElement('button');
+  btnPlayerTakeCard.className = 'btn btn-primary btn-lg';
+  btnPlayerTakeCard.innerHTML = 'Hit the card';
+  btnPlayerTakeCard.onclick = function() {drawCard(deckId, true)};
+  btnPlayerTakeCard.setAttribute('id', 'btnCardHit')
+  btnPlayerTakeCard.setAttribute("data-toggle","modal")
+  btnPlayerTakeCard.setAttribute("data-target", "#refreshModal")      
+  btnPlayerTakeCard.setAttribute('type','button');      
+
+  const btnPlayerGameEnd = document.createElement('button');
+  btnPlayerGameEnd.className = 'btn btn-secondary btn-lg'; 
+  btnPlayerGameEnd.innerHTML = 'stand the game'; 
+  btnPlayerGameEnd.onclick = function() {standGame(deckId)};    
+  btnPlayerGameEnd.setAttribute('type','button');
+
+  const playerContinuePlaying = document.createElement('div');
+  playerContinuePlaying.className = 'card-body';
+  playerContinuePlaying.appendChild(btnPlayerTakeCard);
+  playerContinuePlaying.appendChild(btnPlayerGameEnd);
+
+  document.getElementById('btnOutput').appendChild(playerContinuePlaying);
+}
+
 function standGame(deckId) {
   drawCard(deckId, false);
-  showModal(deckId);
+  showModal(deckId, false);
 }
 
 function cardValueMapping(cardValue) {  
@@ -179,12 +179,13 @@ function cardValueMapping(cardValue) {
   }
 }
 
-function showModal(deckId) {
+function showModal(deckId, isDoubleAce) {
   const cardPlayerValueSum = document.getElementById('playerScore').innerHTML;
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
   const modalRefresh = document.createElement('div');
   modalRefresh.className = 'modal fade show';
   modalRefresh.setAttribute("id", "refreshModal"); 
+
   modalRefresh.innerHTML = `
   <div class="modal-dialog">
     <div class="modal-content">
@@ -194,7 +195,7 @@ function showModal(deckId) {
       <div class="modal-body">
         <p>${cardPlayerValueSum}</p>
         <p>${cardDealerValueSum}</p>
-        <p>${printScore(deckId)}</p>
+        <p>${printScore(deckId, isDoubleAce)}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
@@ -206,11 +207,13 @@ function showModal(deckId) {
   document.querySelector('.container').appendChild(modalRefresh)
 }
 
-function printScore(deckId) {
+function printScore(deckId, isDoubleAce) {
   const cardPlayerValueSum = document.getElementById('scorePlayer').textContent;
   const cardDealerValueSum = document.getElementById('scoreDealer').textContent;  
 
-  if(cardPlayerValueSum >= 22) {
+  if (isDoubleAce) {
+    return "You win";
+  } else if(cardPlayerValueSum >= 22) {
     return "You lose";
   } else if (cardPlayerValueSum == 21) {
     return "You win!";
@@ -223,31 +226,4 @@ function printScore(deckId) {
   } else if(cardPlayerValueSum == cardDealerValueSum) {
     return "Push";
   }
-}
-
-function showModalAce() {
-  const cardPlayerValueSum = document.getElementById('playerScore').innerHTML;
-  const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
-  const modalRefresh = document.createElement('div');
-  modalRefresh.className = 'modal fade show';
-  modalRefresh.setAttribute("id", "refreshModal"); 
-  modalRefresh.innerHTML = `
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Refresh game</h5>
-      </div>
-      <div class="modal-body">
-        <p>${cardPlayerValueSum}</p>
-        <p>${cardDealerValueSum}</p>
-        <p>You win!</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
-      </div>
-    </div>
-  </div>
-  `
-  document.getElementById('btnCardHit').setAttribute("onclick", "this.disabled=true;");
-  document.querySelector('.container').appendChild(modalRefresh);
 }
