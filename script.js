@@ -115,11 +115,11 @@ function drawCard(deckId, isPlayer) {
         let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
         document.getElementById('scorePlayer').innerHTML = `${cardNewValueSum}`;
         if(cardNewValueSum >= 22) {
-          drawCard(deckId, true);
+          drawCard(deckId, false);
           showModal(deckId, false);        
           return;
         } else if (cardNewValueSum == 21){
-          drawCard(deckId, true);
+          drawCard(deckId, false);
           showModal(deckId, false);
         }
       } else {
