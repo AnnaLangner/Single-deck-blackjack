@@ -1,6 +1,5 @@
 .modal {
   display: block;
-  background-color: transparent;
   text-align: center;
   padding-top: 100px;
 }
@@ -11,4 +10,8 @@
 
 .modal-footer {
   display: block;  
+}
+
+.table {
+  display: none;
 }
