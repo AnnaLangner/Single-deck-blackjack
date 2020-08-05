@@ -31,7 +31,7 @@ function createButtons(deckId) {
   const btnPlayerTakeCard = document.createElement('button');
   btnPlayerTakeCard.className = 'btn btn-primary btn-lg';
   btnPlayerTakeCard.innerHTML = 'Hit the card';
-  btnPlayerTakeCard.onclick = function() {drawPlayerCard(deckId)};
+  btnPlayerTakeCard.onclick = function() {drawCard(deckId, true)};
   btnPlayerTakeCard.setAttribute('id', 'btnCardHit')
   btnPlayerTakeCard.setAttribute("data-toggle","modal")
   btnPlayerTakeCard.setAttribute("data-target", "#refreshModal")      
@@ -103,15 +103,14 @@ function getFirstTwoCards(deckId, isPlayer) {
         <p id="scoreDealer">${cardValueSum}</p>
         `
         document.getElementById('dealerScore').appendChild(cardsScore); 
-      }
-          
+      }          
     }
   }
 
   xmlHttp.send();
 }
 
-function drawPlayerCard(deckId) {
+function drawCard(deckId, isPlayer) {
   const urlTakenCard = `${baseUrl}${deckId}/draw/?count=1`;
 
   const xmlHttp = new XMLHttpRequest();
@@ -126,62 +125,43 @@ function drawPlayerCard(deckId) {
 
       const cardNew = document.createElement('td');
       cardNew.innerHTML = `<img src="${cardSrc + ' '}">`;
-      document.querySelector('.player').appendChild(cardNew);
+
+      if(isPlayer) {
+        document.querySelector('.player').appendChild(cardNew);
+      } else {
+        document.querySelector('.dealer').appendChild(cardNew);
+      }     
 
       const cardValueNum = cardValueMapping(cardValue)
-  
-      let cardValueSum = document.getElementById('scorePlayer').innerHTML;     
-      let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
-      document.getElementById('scorePlayer').innerHTML = `${cardNewValueSum}`;
 
-      if(cardNewValueSum >= 22) {
-        drawDealerCard(deckId);
-        showModal(deckId);        
-        return;
-      } else if (cardNewValueSum == 21){
-        drawDealerCard(deckId);
-        showModal(deckId);
-      }           
+      if(isPlayer) {
+        let cardValueSum = document.getElementById('scorePlayer').innerHTML;     
+        let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
+        document.getElementById('scorePlayer').innerHTML = `${cardNewValueSum}`;
+        if(cardNewValueSum >= 22) {
+          drawCard(deckId);
+          showModal(deckId);        
+          return;
+        } else if (cardNewValueSum == 21){
+          drawCard(deckId);
+          showModal(deckId);
+        }
+      } else {
+        let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
+        let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
+        document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;
+        if(cardNewValueSum < 17) {
+          drawCard(deckId);
+        } 
+      }   
     }
   }
 
   xmlHttp.send();
 }
 
-function drawDealerCard(deckId) {
-  const urlTakenCard = `${baseUrl}${deckId}/draw/?count=1`;
-
-  const xmlHttp = new XMLHttpRequest();
-
-  xmlHttp.open("GET", urlTakenCard, false);
-
-  xmlHttp.onload = function() {
-    if(this.status === 200) {
-      const deck = JSON.parse(this.responseText);
-      const cardSrc = deck.cards[0].image;
-      const cardValue = deck.cards[0].value;
-
-      const cardNew = document.createElement('td');
-      cardNew.innerHTML = `<img src="${cardSrc + ' '}">`;    
-      document.querySelector('.dealer').appendChild(cardNew);
-
-      const cardValueNum = cardValueMapping(cardValue)
-    
-      let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
-      let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
-      document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;      
-
-      if(cardNewValueSum < 17) {
-        drawDealerCard(deckId);
-      }         
-    }
-  }
-
-  xmlHttp.send();  
-}
-
 function standGame(deckId) {
-  drawDealerCard(deckId);
+  drawCard(deckId, false);
   showModal(deckId);
 }
 
