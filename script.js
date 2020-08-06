@@ -1,4 +1,5 @@
-document.getElementById('btn-start').addEventListener('click', getShuffle, {once : true})
+document.getElementById('btn-single-player').addEventListener('click', getShuffle, {once : true})
+document.getElementById('btn-multiplayer').addEventListener('click', getPlayers, {once : true})
 
 const baseUrl = 'https://deckofcardsapi.com/api/deck/'
 
@@ -25,6 +26,79 @@ function getShuffle(e) {
   xmlHttp.send();
 
   e.preventDefault();
+}
+
+function getPlayers(e) {
+  const card = document.createElement('div');
+  card.className = 'card';
+  const cardBody = document.createElement('div');
+  cardBody.className = 'card-body text-center';
+  card.appendChild(cardBody);
+
+  const divPlayer = document.createElement('div');
+  divPlayer.className = 'input-group mb-3';
+  const inputPlayer = document.createElement('input');
+  inputPlayer.className = 'form-control';
+  inputPlayer.setAttribute('id', 'inputPlayer');
+  inputPlayer.setAttribute('type', 'text');
+  inputPlayer.setAttribute('placeholder', 'Player name');  
+  divPlayer.appendChild(inputPlayer)
+
+  const divBtnAddPlayer = document.createElement('div');
+  divBtnAddPlayer.className = 'input-group-append';
+  const btnAddPlayer = document.createElement('button');
+  btnAddPlayer.className = 'btn btn-outline-primary';
+  btnAddPlayer.innerHTML = 'Submit Player';
+  btnAddPlayer.setAttribute('type', 'button');
+  divBtnAddPlayer.appendChild(btnAddPlayer);
+  divPlayer.appendChild(divBtnAddPlayer);
+  
+  cardBody.appendChild(divPlayer);
+
+  document.getElementById('cardOutput').appendChild(cardBody);   
+        
+  btnAddPlayer.addEventListener('click', addPlayer);      
+    
+  e.preventDefault();
+}
+
+let players = [];
+
+function addPlayer(e) {
+  let inputPlayerContent = document.getElementById('inputPlayer').value;
+  if(inputPlayerContent === ''){
+    alert('Add Player')
+    return;
+  };
+  players.push(inputPlayerContent);  
+  
+  const singlePlayer = document.createElement('li');
+  singlePlayer.className = 'collection-item';
+  singlePlayer.appendChild(document.createTextNode(inputPlayerContent));
+  
+  const removeButton = document.createElement('button');
+  removeButton.className = 'delete-item secondary-content';
+  removeButton.innerHTML = `
+  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+    <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+  </svg>
+  `;
+
+  singlePlayer.appendChild(removeButton); 
+
+  document.getElementById('listOfPlayers').appendChild(singlePlayer);
+
+  singlePlayer.addEventListener('click', removePlayer);
+
+  e.preventDefault();
+}
+
+function removePlayer(e) {
+  if(e.target.parentElement.classList.contains('delete-item')) {
+    if(confirm('Are You Sure?')){
+      e.target.parentElement.parentElement.remove();
+    }    
+  }
 }
 
 function getFirstTwoCards(deckId, isPlayer) {

@@ -15,3 +15,12 @@
 .table {
   display: none;
 }
+
+img {
+  width: 50%;
+}
+
+button.delete-item.secondary-content {
+  margin-left: 50px;
+  border-radius: 5px;
+}
