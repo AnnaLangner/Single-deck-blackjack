@@ -2,13 +2,14 @@ document.getElementById('btn-single-player').addEventListener('click', getShuffl
 document.getElementById('btn-multiplayer').addEventListener('click', getPlayers, {once : true})
 
 const baseUrl = 'https://deckofcardsapi.com/api/deck/'
+let players = [];
 
 function getShuffle(e) {
   const urlShuffleCards = `${baseUrl}new/shuffle/?deck_count=1`;
 
   const xmlHttp = new XMLHttpRequest();
 
-  xmlHttp.open("GET", urlShuffleCards, false);  
+  xmlHttp.open("GET", urlShuffleCards, true);  
 
   xmlHttp.onload = function() {
     if(this.status === 200){
@@ -57,12 +58,13 @@ function getPlayers(e) {
 
   document.getElementById('cardOutput').appendChild(cardBody);   
         
-  btnAddPlayer.addEventListener('click', addPlayer);      
+  btnAddPlayer.addEventListener('click', addPlayer);  
+  
+  document.getElementById('btn-start-game').style.display = "block";
+  document.getElementById('btn-start-game').addEventListener('click', startNewGame, {once : true})
     
   e.preventDefault();
 }
-
-let players = [];
 
 function addPlayer(e) {
   let inputPlayerContent = document.getElementById('inputPlayer').value;
@@ -71,7 +73,7 @@ function addPlayer(e) {
     return;
   };
   players.push(inputPlayerContent);  
-  
+
   const singlePlayer = document.createElement('li');
   singlePlayer.className = 'collection-item';
   singlePlayer.appendChild(document.createTextNode(inputPlayerContent));
@@ -83,12 +85,17 @@ function addPlayer(e) {
     <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
   </svg>
   `;
-
   singlePlayer.appendChild(removeButton); 
 
   document.getElementById('listOfPlayers').appendChild(singlePlayer);
 
-  singlePlayer.addEventListener('click', removePlayer);
+  removeButton.addEventListener('click', removePlayer);
+
+  document.getElementById('inputPlayer').value = "";
+
+  // for(let i = 0; i < players.length; i++) {
+  //   console.log(i)
+  // }
 
   e.preventDefault();
 }
@@ -101,12 +108,37 @@ function removePlayer(e) {
   }
 }
 
-function getFirstTwoCards(deckId, isPlayer) {
+function startNewGame() {
+  const urlStartNewGame = `${baseUrl}new/shuffle/?deck_count=1`;
+
+  const xmlHttp = new XMLHttpRequest();
+
+  xmlHttp.open("GET", urlStartNewGame, true);  
+
+  xmlHttp.onload = function() {
+    if(this.status === 200){
+      const deck = JSON.parse(this.responseText);
+      const deckId = deck.deck_id; 
+      document.getElementById('tablePlayer').style.display = "block";
+      document.getElementById('tableDealer').style.display = "block";
+      
+      for(let i = 0; i < players.length; i++) {
+        getFirstTwoCards(deckId, true, players[i]);
+        createButtons(deckId, players[i]);
+      }
+      getFirstTwoCards(deckId, false);
+    }
+  }
+
+  xmlHttp.send();
+}
+
+function getFirstTwoCards(deckId, isPlayer, playerName) {
   const urlFirstTwoCard = `${baseUrl}${deckId}/draw/?count=2`
 
   const xmlHttp = new XMLHttpRequest();
 
-  xmlHttp.open("GET", urlFirstTwoCard, false);
+  xmlHttp.open("GET", urlFirstTwoCard, true);
 
   xmlHttp.onload = function() {
     if(this.status === 200){
@@ -117,6 +149,10 @@ function getFirstTwoCards(deckId, isPlayer) {
       if(isPlayer) {
         row.className = 'table-body-content player'
         document.getElementById('playerCards').appendChild(row);
+        const rowPlayerName = document.createElement('th');
+        rowPlayerName.setAttribute('scope', 'row');
+        rowPlayerName.innerHTML = `${playerName}`
+        row.appendChild(rowPlayerName)
       } else {
         row.className = 'table-body-content dealer'
         document.getElementById('dealerCards').appendChild(row);
@@ -144,7 +180,7 @@ function getFirstTwoCards(deckId, isPlayer) {
       if(isPlayer) {
         cardsScore.innerHTML = `
         <h5 class="card-title">Your score: </h5>
-        <p id="scorePlayer">${cardValueSum}</p>
+        <p id="scorePlaye${playerName}">${cardValueSum}</p>
         `
         document.getElementById('playerScore').appendChild(cardsScore) 
       } else {
@@ -160,7 +196,7 @@ function getFirstTwoCards(deckId, isPlayer) {
   xmlHttp.send();
 }
 
-function drawCard(deckId, isPlayer) {
+function drawCard(deckId, isPlayer, pleyerName) {
   const urlTakenCard = `${baseUrl}${deckId}/draw/?count=1`;
 
   const xmlHttp = new XMLHttpRequest();
@@ -210,11 +246,11 @@ function drawCard(deckId, isPlayer) {
   xmlHttp.send();
 }
 
-function createButtons(deckId) {
+function createButtons(deckId, playerName) {
   const btnPlayerTakeCard = document.createElement('button');
   btnPlayerTakeCard.className = 'btn btn-primary btn-lg';
   btnPlayerTakeCard.innerHTML = 'Hit the card';
-  btnPlayerTakeCard.onclick = function() {drawCard(deckId, true)};
+  btnPlayerTakeCard.onclick = function() {drawCard(deckId, true, playerName)};
   btnPlayerTakeCard.setAttribute('id', 'btnCardHit')
   btnPlayerTakeCard.setAttribute("data-toggle","modal")
   btnPlayerTakeCard.setAttribute("data-target", "#refreshModal")      
