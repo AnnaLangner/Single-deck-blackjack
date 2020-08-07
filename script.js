@@ -178,6 +178,7 @@ function getFirstTwoCards(deckId, isPlayer, playerName) {
       const cardsScore = document.createElement('div');
       cardsScore.className = 'card-body';    
       if(isPlayer){
+        cardsScore.setAttribute('id', `cardScore${playerName}`)
         cardsScore.innerHTML = `
         <h5 class="card-title">${playerName} score: </h5>
         <p id="scorePlayer${playerName}">${cardValueSum}</p>
@@ -208,13 +209,10 @@ function drawCard(deckId, isPlayer, playerName) {
       const cardSrc = deck.cards[0].image;
       const cardValue = deck.cards[0].value;
 
-      const cardNew = document.createElement('img');
-      cardNew.innerHTML = `src="${cardSrc + ' '}"`;
-
       if(isPlayer) {
-        document.getElementById(`player${playerName}`).appendChild(cardNew);
+        document.getElementById(`player${playerName}`).innerHTML += `<img src="${cardSrc + ' '}">`;
       } else {
-        document.getElementById('dealer').appendChild(cardNew);
+        document.getElementById('dealer').innerHTML += `<img src="${cardSrc + ' '}">`;
       }     
 
       const cardValueNum = cardValueMapping(cardValue)
@@ -289,8 +287,14 @@ function cardValueMapping(cardValue) {
 }
 
 function showModal(deckId, isDoubleAce, playerName) {
-  const cardPlayerValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;
+  let cardPlayerValueSum = '';
+  
+  for(let i = 0; i < players.length; i++) {
+    let scorePlayer = document.getElementById(`scorePlayer${players[i]}`).innerText;
+    cardPlayerValueSum += `<h5>${players[i]}</h5><p>Score: ${scorePlayer}</p>`
+  }
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
+
   const modalRefresh = document.createElement('div');
   modalRefresh.className = 'modal fade show';
   modalRefresh.setAttribute("id", "refreshModal"); 
@@ -307,17 +311,18 @@ function showModal(deckId, isDoubleAce, playerName) {
         <p>${printScore(deckId, isDoubleAce)}</p>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
+        <button type="button" class="btn btn-primary text-center" onClick="window.location.reload();">Refresh</button>
       </div>
     </div>
   </div>
   `
-  document.getElementById('btnCardHit').setAttribute("onclick", "this.disabled=true;");
-  document.querySelector('.container').appendChild(modalRefresh)
+  // document.getElementById(`btnCardHit${playerName}`).style.display = 'none';
+  // document.getElementById(`btnStandGame${playerName}`).style.display = 'none';
+  document.querySelector('.container').appendChild(modalRefresh);
 }
 
 function printScore(deckId, isDoubleAce, playerName) {
-  const cardPlayerValueSum = document.getElementById(`scorePlayer${playerName}`).textContent;
+  const cardPlayerValueSum = document.getElementById('playerOutput').textContent;
   const cardDealerValueSum = document.getElementById('scoreDealer').textContent;  
 
   if (isDoubleAce) {
