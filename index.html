@@ -15,43 +15,42 @@
         <button type="button" class="btn btn-primary btn-lg" id="btn-single-player">single player</button>
         <button type="button" class="btn btn-primary btn-lg" id="btn-multiplayer">multiplayer</button>
       </div>
-      <div class="cardOutput" id="cardOutput">
-        <ul class="collection" id="listOfPlayers">
-          <button class="btn btn-primary btn-lg" id="btn-start-game">Start game</button>
-        </ul>
-        <table class="table table-striped" id="tablePlayer">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Player movements</th>
-            </tr>
-          </thead>
-          <tbody id="playerCards">
-          </tbody>
-        </table>
-        
-        <table class="table table-striped" id="tableDealer">
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">The moves of the dealer</th>
-            </tr>
-          </thead>
-          <tbody id="dealerCards">
-          </tbody>
-        </table>
-      </div>
-      <div class="scoreOutput" id="scoreOutput">
-        <div class="row">
-          <div class="col-sm-6">
-            <div class="card" id="playerScore"></div>
-          </div>
-          <div class="col-sm-6">
-            <div class="card" id="dealerScore"></div>
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="cardOutput" id="cardOutput">
+            <ul class="collection" id="listOfPlayers">
+              <button class="btn btn-primary btn-lg" id="btn-start-game">Start game</button>
+            </ul>
+            <table class="table table-striped" id="tablePlayer">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Player movements</th>
+                </tr>
+              </thead>
+              <tbody id="playerCards">
+              </tbody>
+            </table>
+            
+            <table class="table table-striped" id="tableDealer">
+              <thead>
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">The moves of the dealer</th>
+                </tr>
+              </thead>
+              <tbody id="dealerCards">
+              </tbody>
+            </table>
           </div>
         </div>
-      </div>
-      <div class="btnOutput" id="btnOutput"></div>      
+        <div class="col-sm-3">
+          <div class="card" id="playerOutput"></div>           
+        </div>
+      </div>      
+      <div class="scoreOutput" id="scoreOutput">
+        <div class="card" id="dealerScore"></div>          
+      </div>           
     </div>
   </div>
   
