@@ -264,8 +264,9 @@ function createButtons(deckId, playerName) {
 
 function standGame(deckId, playerName) {
   document.getElementById(`btnCardHit${playerName}`).style.visibility = 'hidden';
-  document.getElementById(`btnStandGame${playerName}`).style.visibility = 'hidden';  
-  document.getElementById(`btnStandGame${playerName}`).setAttribute('state', 'stand');
+  let btnStandGame = document.getElementById(`btnStandGame${playerName}`)  
+  btnStandGame.style.visibility = 'hidden';  
+  btnStandGame.setAttribute('state', 'stand');
   for(let i = 0; i < players.length; i++){
     let id = `btnStandGame${players[i]}`
     if(document.getElementById(id).getAttribute('state') != 'stand') {
@@ -290,12 +291,19 @@ function cardValueMapping(cardValue) {
   }
 }
 
-function showModal(deckId, isDoubleAce, playerName) {
+function showModal(deckId, isDoubleAce) {
   let cardPlayerValueSum = '';  
+  let playerMax = '';
+  let scorePlayerMax = 0;
   for(let i = 0; i < players.length; i++) {
     let scorePlayer = document.getElementById(`scorePlayer${players[i]}`).innerText;
     cardPlayerValueSum += `<h5>${players[i]}:</h5><p>Score: ${scorePlayer}</p>`;
+    if(scorePlayer < 22 && scorePlayer > scorePlayerMax) {
+      scorePlayerMax = scorePlayer;
+      playerMax = players[i]
+    } 
   }
+  cardPlayerValueSum = `<h5>${playerMax}:</h5><p>Score: ${scorePlayerMax}</p>`;
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
 
   const modalRefresh = document.createElement('div');
@@ -311,7 +319,7 @@ function showModal(deckId, isDoubleAce, playerName) {
       <div class="modal-body">
         <p>${cardPlayerValueSum}</p>
         <p>${cardDealerValueSum}</p>
-        <p>${printScore(deckId, isDoubleAce)}</p>
+        <p>${printScore(deckId, isDoubleAce, playerMax, cardPlayerValueSum, cardDealerValueSum)}</p>
       </div>
       <div class="modal-footer text-center">
         <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
@@ -322,11 +330,7 @@ function showModal(deckId, isDoubleAce, playerName) {
   document.querySelector('.container').appendChild(modalRefresh);
 }
 
-function printScore(deckId, isDoubleAce, playerName) {
-  const cardPlayerValueSum = document.getElementById('playerOutput').textContent;
-  console.log(cardPlayerValueSum)
-  const cardDealerValueSum = document.getElementById('scoreDealer').textContent;  
-
+function printScore(deckId, isDoubleAce, playerName, cardPlayerValueSum, cardDealerValueSum) {
   if (isDoubleAce) {
     return "You win";
   } else if(cardPlayerValueSum >= 22) {
@@ -342,4 +346,5 @@ function printScore(deckId, isDoubleAce, playerName) {
   } else if(cardPlayerValueSum == cardDealerValueSum) {
     return "Push";
   }
+  
 }
