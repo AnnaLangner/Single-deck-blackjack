@@ -60,7 +60,7 @@ function getPlayers(e) {
 
   document.getElementById('rowPlayer').style.visibility = "visible";
   document.getElementById('rowDealer').style.visibility = "visible"; 
-  document.getElementById('btn-start-game').style.visibility = "visible";
+  document.getElementById('btn-start-game').style.display = 'block';
   document.getElementById('btn-single-player').style.visibility = "hidden";
   document.getElementById('btn-start-game').addEventListener('click', startNewGame, {once : true})
     
@@ -119,8 +119,8 @@ function startNewGame() {
       document.getElementById('tablePlayer').style.visibility = "visible";
       document.getElementById('tableDealer').style.visibility = "visible";
       document.getElementById('cardBody').style.display = "none";
-      document.getElementById('listOfPlayers').style.visibility = "hidden";
-      document.getElementById('btn-start-game').style.visibility = "hidden";   
+      document.getElementById('listOfPlayers').style.display = "none";
+      document.getElementById('btn-start-game').style.display = "none";   
       
       for(let i = 0; i < players.length; i++) {
         getFirstTwoCards(deckId, true, players[i]);
@@ -217,28 +217,23 @@ function drawCard(deckId, isPlayer, playerName) {
 
       const cardValueNum = cardValueMapping(cardValue)
 
-      if(isPlayer) {
-        let cardValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;     
-        let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
-        document.getElementById(`scorePlayer${playerName}`).innerHTML = `${cardNewValueSum}`;
-        if(cardNewValueSum >= 22) {
-          drawCard(deckId, false);
-          showModal(deckId, false);        
-          return;
-        } else if (cardNewValueSum == 21){
-          drawCard(deckId, false);
-          showModal(deckId, false);
-        }
-      } else {
-        let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
-        let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
-        document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;
-        if(cardNewValueSum < 17) {
-          drawCard(deckId, false);
-        } 
-      }   
+        if(isPlayer) {
+          let cardValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;     
+          let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
+          document.getElementById(`scorePlayer${playerName}`).innerHTML = `${cardNewValueSum}`;
+          if(cardNewValueSum >= 21) {
+            standGame(deckId, playerName);
+          }          
+        } else {
+          let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
+          let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
+          document.getElementById('scoreDealer').innerHTML = `${cardNewValueSum}`;
+          if(cardNewValueSum < 17) {
+            drawCard(deckId, false);
+          } 
+        }  
+      } 
     }
-  }
 
   xmlHttp.send();
 }
@@ -256,7 +251,7 @@ function createButtons(deckId, playerName) {
   const btnPlayerStandGame = document.createElement('button');
   btnPlayerStandGame.className = 'btn btn-secondary'; 
   btnPlayerStandGame.innerHTML = 'stand the game'; 
-  btnPlayerStandGame.onclick = function() {standGame(deckId)};    
+  btnPlayerStandGame.onclick = function() {standGame(deckId, playerName)};    
   btnPlayerStandGame.setAttribute('type','button');
   btnPlayerStandGame.setAttribute('id', `btnStandGame${playerName}`)
   const cardsScore = document.createElement('div');
@@ -267,7 +262,16 @@ function createButtons(deckId, playerName) {
             
 }
 
-function standGame(deckId) {
+function standGame(deckId, playerName) {
+  document.getElementById(`btnCardHit${playerName}`).style.visibility = 'hidden';
+  document.getElementById(`btnStandGame${playerName}`).style.visibility = 'hidden';  
+  document.getElementById(`btnStandGame${playerName}`).setAttribute('state', 'stand');
+  for(let i = 0; i < players.length; i++){
+    let id = `btnStandGame${players[i]}`
+    if(document.getElementById(id).getAttribute('state') != 'stand') {
+      return;
+    } 
+  } 
   drawCard(deckId, false);
   showModal(deckId, false);
 }
@@ -287,11 +291,10 @@ function cardValueMapping(cardValue) {
 }
 
 function showModal(deckId, isDoubleAce, playerName) {
-  let cardPlayerValueSum = '';
-  
+  let cardPlayerValueSum = '';  
   for(let i = 0; i < players.length; i++) {
     let scorePlayer = document.getElementById(`scorePlayer${players[i]}`).innerText;
-    cardPlayerValueSum += `<h5>${players[i]}</h5><p>Score: ${scorePlayer}</p>`
+    cardPlayerValueSum += `<h5>${players[i]}:</h5><p>Score: ${scorePlayer}</p>`;
   }
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
 
@@ -303,26 +306,25 @@ function showModal(deckId, isDoubleAce, playerName) {
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Refresh game</h5>
+        <h5 class="modal-title">Game summary</h5>
       </div>
       <div class="modal-body">
         <p>${cardPlayerValueSum}</p>
         <p>${cardDealerValueSum}</p>
         <p>${printScore(deckId, isDoubleAce)}</p>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary text-center" onClick="window.location.reload();">Refresh</button>
+      <div class="modal-footer text-center">
+        <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
       </div>
     </div>
   </div>
   `
-  // document.getElementById(`btnCardHit${playerName}`).style.display = 'none';
-  // document.getElementById(`btnStandGame${playerName}`).style.display = 'none';
   document.querySelector('.container').appendChild(modalRefresh);
 }
 
 function printScore(deckId, isDoubleAce, playerName) {
   const cardPlayerValueSum = document.getElementById('playerOutput').textContent;
+  console.log(cardPlayerValueSum)
   const cardDealerValueSum = document.getElementById('scoreDealer').textContent;  
 
   if (isDoubleAce) {

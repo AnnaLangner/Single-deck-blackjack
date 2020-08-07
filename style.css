@@ -1,15 +1,15 @@
 .modal {
-  visibility: visible;
+  display: block;
   text-align: center;
   padding-top: 100px;
 }
 
 .modal-header {
-  visibility: visible;
+  display: inline-block;
 }
 
 .modal-footer {
-  visibility: visible;  
+  display: inline-block; 
 }
 
 ul#listOfPlayers {
@@ -26,7 +26,7 @@ button.secondary-content {
 }
 
 button#btn-start-game {
-  visibility: hidden;
+  display: none;
 }
 
 div#rowPlayer {
