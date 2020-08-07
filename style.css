@@ -1,23 +1,23 @@
 .modal {
-  display: block;
+  visibility: visible;
   text-align: center;
   padding-top: 100px;
 }
 
 .modal-header {
-  display: block;
+  visibility: visible;
 }
 
 .modal-footer {
-  display: block;  
+  visibility: visible;  
 }
 
-.table {
-  display: none;
+ul#listOfPlayers {
+  list-style: none;
 }
 
 img {
-  width: 50%;
+  width: 10%;
 }
 
 button.secondary-content {
@@ -26,5 +26,13 @@ button.secondary-content {
 }
 
 button#btn-start-game {
-  display: none;
+  visibility: hidden;
+}
+
+div#rowPlayer {
+  visibility: hidden;
+}
+
+div#rowDealer {
+  visibility: hidden;
 }

@@ -14,43 +14,39 @@
         <h5 class="card-title">Click the button to start the game</h5>
         <button type="button" class="btn btn-primary btn-lg" id="btn-single-player">single player</button>
         <button type="button" class="btn btn-primary btn-lg" id="btn-multiplayer">multiplayer</button>
+        <div id="divListGroup">
+          <ul class="list-group list-group-flush text-center" id="listOfPlayers">
+            <button class="btn btn-primary btn-lg text-center" id="btn-start-game">Start game</button>
+          </ul>
+        </div>   
       </div>
-      <div class="row">
+      <div class="row" id="rowPlayer">
         <div class="col-sm-9">
-          <div class="cardOutput" id="cardOutput">
-            <ul class="collection" id="listOfPlayers">
-              <button class="btn btn-primary btn-lg" id="btn-start-game">Start game</button>
-            </ul>
-            <table class="table table-striped" id="tablePlayer">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">Player movements</th>
-                </tr>
-              </thead>
-              <tbody id="playerCards">
-              </tbody>
-            </table>
-            
-            <table class="table table-striped" id="tableDealer">
-              <thead>
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">The moves of the dealer</th>
-                </tr>
-              </thead>
-              <tbody id="dealerCards">
-              </tbody>
-            </table>
+          <div class="cardOutput" id="cardOutput">                       
+            <div class="card"  id="tablePlayer">
+              <div class="card-header text-center">
+                <h5>Players</h5>
+              </div>
+              <div class="card-body" id="playerCards"></div>
+            </div>            
           </div>
         </div>
         <div class="col-sm-3">
           <div class="card" id="playerOutput"></div>           
         </div>
-      </div>      
-      <div class="scoreOutput" id="scoreOutput">
-        <div class="card" id="dealerScore"></div>          
-      </div>           
+      </div> 
+      <div class="row" id="rowDealer">
+        <div class="col-sm-9">  
+          <div class="card"  id="tableDealer">
+            <div class="card-header text-center">
+              <h5>Dealer</h5>
+            </div>
+            <div class="card-body" id="dealerCards"></div>
+          </div>
+          <div class="col-sm-3">
+            <div class="card" id="dealerScore"></div>
+          </div>        
+      </div>                            
     </div>
   </div>
   

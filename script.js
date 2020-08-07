@@ -15,12 +15,12 @@ function getShuffle(e) {
     if(this.status === 200){
       const deck = JSON.parse(this.responseText);
       const deckId = deck.deck_id;  
-      document.getElementById('tablePlayer').style.display = "block";
-      document.getElementById('tableDealer').style.display = "block";
-
+      document.getElementById('rowPlayer').style.visibility = "visible";
+      document.getElementById('rowDealer').style.visibility = "visible";   
+      createButtons(deckId);      
       getFirstTwoCards(deckId, true);
       getFirstTwoCards(deckId, false);
-      createButtons(deckId);      
+               
     }
   }
 
@@ -30,12 +30,9 @@ function getShuffle(e) {
 }
 
 function getPlayers(e) {
-  const card = document.createElement('div');
-  card.className = 'card';
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body text-center';
-  cardBody.setAttribute('id', 'cardBody')
-  card.appendChild(cardBody);
+  cardBody.setAttribute('id', 'cardBody')  
 
   const divPlayer = document.createElement('div');
   divPlayer.className = 'input-group mb-3';
@@ -56,13 +53,15 @@ function getPlayers(e) {
   divPlayer.appendChild(divBtnAddPlayer);
   
   cardBody.appendChild(divPlayer);
-
-  document.getElementById('cardOutput').appendChild(cardBody);   
+ 
+  document.getElementById('divListGroup').appendChild(cardBody);
         
-  btnAddPlayer.addEventListener('click', addPlayer);  
-  
-  document.getElementById('btn-start-game').style.display = "block";
-  document.getElementById('btn-single-player').style.display = "none";  
+  btnAddPlayer.addEventListener('click', addPlayer);
+
+  document.getElementById('rowPlayer').style.visibility = "visible";
+  document.getElementById('rowDealer').style.visibility = "visible"; 
+  document.getElementById('btn-start-game').style.visibility = "visible";
+  document.getElementById('btn-single-player').style.visibility = "hidden";
   document.getElementById('btn-start-game').addEventListener('click', startNewGame, {once : true})
     
   e.preventDefault();
@@ -77,7 +76,7 @@ function addPlayer(e) {
   players.push(inputPlayerContent);  
 
   const singlePlayer = document.createElement('li');
-  singlePlayer.className = 'collection-item';
+  singlePlayer.className = 'list-group-item m-2';
   singlePlayer.appendChild(document.createTextNode(inputPlayerContent));
   
   const removeButton = document.createElement('button');
@@ -117,11 +116,11 @@ function startNewGame() {
     if(this.status === 200){
       const deck = JSON.parse(this.responseText);
       const deckId = deck.deck_id; 
-      document.getElementById('tablePlayer').style.display = "block";
-      document.getElementById('tableDealer').style.display = "block";
+      document.getElementById('tablePlayer').style.visibility = "visible";
+      document.getElementById('tableDealer').style.visibility = "visible";
       document.getElementById('cardBody').style.display = "none";
-      document.getElementById('listOfPlayers').style.display = "none";
-      document.getElementById('btn-start-game').style.display = "none";     
+      document.getElementById('listOfPlayers').style.visibility = "hidden";
+      document.getElementById('btn-start-game').style.visibility = "hidden";   
       
       for(let i = 0; i < players.length; i++) {
         getFirstTwoCards(deckId, true, players[i]);
@@ -139,23 +138,25 @@ function getFirstTwoCards(deckId, isPlayer, playerName) {
 
   const xmlHttp = new XMLHttpRequest();
 
-  xmlHttp.open("GET", urlFirstTwoCard, true);
+  xmlHttp.open("GET", urlFirstTwoCard, false);
 
   xmlHttp.onload = function() {
     if(this.status === 200){
       const deck = JSON.parse(this.responseText);
       let cardValueSum = 0;
 
-      const row = document.createElement('tr');
+      const row = document.createElement('div');
       if(isPlayer) {
-        row.className = 'table-body-content player'
+        row.className = 'body-content';
+        row.setAttribute('id', `player${playerName}`);
         document.getElementById('playerCards').appendChild(row);
-        const rowPlayerName = document.createElement('th');
-        rowPlayerName.setAttribute('scope', 'row');
+        const rowPlayerName = document.createElement('h6')
+        rowPlayerName.className = 'card-header text-center'
         rowPlayerName.innerHTML = `${playerName}`
         row.appendChild(rowPlayerName)
       } else {
-        row.className = 'table-body-content dealer'
+        row.className = 'body-content';
+        row.setAttribute('id', 'dealer');
         document.getElementById('dealerCards').appendChild(row);
       }      
 
@@ -167,30 +168,34 @@ function getFirstTwoCards(deckId, isPlayer, playerName) {
         const cardSrc = deck.cards[i].image;
         const cardValue = deck.cards[i].value;        
 
-        const cardItem = document.createElement('td')
-        cardItem.innerHTML = `<img src="${cardSrc + ' '}">`;
-        row.appendChild(cardItem)  
-        
+        row.innerHTML += `<img src="${cardSrc + ' '}">`;
+              
         const cardValueNum = cardValueMapping(cardValue)
     
         cardValueSum += cardValueNum;  
-      }     
-
-      document.getElementById(`scorePlaye${playerName}`).innerHTML = `${cardValueSum}`
+      }           
     
       const cardsScore = document.createElement('div');
-      cardsScore.className = 'card-body';      
-      cardsScore.innerHTML = `
+      cardsScore.className = 'card-body';    
+      if(isPlayer){
+        cardsScore.innerHTML = `
+        <h5 class="card-title">${playerName} score: </h5>
+        <p id="scorePlayer${playerName}">${cardValueSum}</p>
+        `
+        document.getElementById('playerOutput').appendChild(cardsScore) 
+      } else {
+        cardsScore.innerHTML = `
       <h5 class="card-title">Dealer score: </h5>
       <p id="scoreDealer">${cardValueSum}</p>      `
-      document.getElementById('dealerScore').appendChild(cardsScore);           
+      document.getElementById('dealerScore').appendChild(cardsScore);
+      }                 
     }
   }
 
   xmlHttp.send();
 }
 
-function drawCard(deckId, isPlayer, pleyerName) {
+function drawCard(deckId, isPlayer, playerName) {
   const urlTakenCard = `${baseUrl}${deckId}/draw/?count=1`;
 
   const xmlHttp = new XMLHttpRequest();
@@ -203,21 +208,21 @@ function drawCard(deckId, isPlayer, pleyerName) {
       const cardSrc = deck.cards[0].image;
       const cardValue = deck.cards[0].value;
 
-      const cardNew = document.createElement('td');
-      cardNew.innerHTML = `<img src="${cardSrc + ' '}">`;
+      const cardNew = document.createElement('img');
+      cardNew.innerHTML = `src="${cardSrc + ' '}"`;
 
       if(isPlayer) {
-        document.querySelector('.player').appendChild(cardNew);
+        document.getElementById(`player${playerName}`).appendChild(cardNew);
       } else {
-        document.querySelector('.dealer').appendChild(cardNew);
+        document.getElementById('dealer').appendChild(cardNew);
       }     
 
       const cardValueNum = cardValueMapping(cardValue)
 
       if(isPlayer) {
-        let cardValueSum = document.getElementById(`scorePlayer${pleyerName}`).innerHTML;     
+        let cardValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;     
         let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
-        document.getElementById(`scorePlayer${pleyerName}`).innerHTML = `${cardNewValueSum}`;
+        document.getElementById(`scorePlayer${playerName}`).innerHTML = `${cardNewValueSum}`;
         if(cardNewValueSum >= 22) {
           drawCard(deckId, false);
           showModal(deckId, false);        
@@ -255,13 +260,9 @@ function createButtons(deckId, playerName) {
   btnPlayerStandGame.innerHTML = 'stand the game'; 
   btnPlayerStandGame.onclick = function() {standGame(deckId)};    
   btnPlayerStandGame.setAttribute('type','button');
-
+  btnPlayerStandGame.setAttribute('id', `btnStandGame${playerName}`)
   const cardsScore = document.createElement('div');
-  cardsScore.className = 'card-body';
-  cardsScore.innerHTML = `
-  <h5 class="card-title">${playerName} score: </h5>
-  <p id="scorePlaye${playerName}"></p>
-  `
+  cardsScore.className = 'card-body';  
   cardsScore.appendChild(btnPlayerTakeCard);
   cardsScore.appendChild(btnPlayerStandGame);
   document.getElementById('playerOutput').appendChild(cardsScore) 
@@ -287,8 +288,8 @@ function cardValueMapping(cardValue) {
   }
 }
 
-function showModal(deckId, isDoubleAce) {
-  const cardPlayerValueSum = document.getElementById('playerScore').innerHTML;
+function showModal(deckId, isDoubleAce, playerName) {
+  const cardPlayerValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
   const modalRefresh = document.createElement('div');
   modalRefresh.className = 'modal fade show';
@@ -315,8 +316,8 @@ function showModal(deckId, isDoubleAce) {
   document.querySelector('.container').appendChild(modalRefresh)
 }
 
-function printScore(deckId, isDoubleAce) {
-  const cardPlayerValueSum = document.getElementById('scorePlayer').textContent;
+function printScore(deckId, isDoubleAce, playerName) {
+  const cardPlayerValueSum = document.getElementById(`scorePlayer${playerName}`).textContent;
   const cardDealerValueSum = document.getElementById('scoreDealer').textContent;  
 
   if (isDoubleAce) {
