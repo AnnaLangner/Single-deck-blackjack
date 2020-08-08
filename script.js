@@ -18,6 +18,7 @@ function getShuffle(e) {
       document.getElementById('rowPlayer').style.visibility = "visible";
       document.getElementById('rowDealer').style.visibility = "visible";   
       const playerName = "Player";
+      players.push(playerName)
       createButtons(deckId, playerName);      
       getFirstTwoCards(deckId, true, playerName);
       getFirstTwoCards(deckId, false);               
@@ -310,7 +311,7 @@ function showModal(deckId, isDoubleAce) {
     if(scorePlayer < 22 && scorePlayer > scorePlayerMax) {
       scorePlayerMax = scorePlayer;
       playerMax = players[i]
-    } 
+    }
   }
   cardPlayerValueSum = `<h5>${playerMax}:</h5><p>Score: ${scorePlayerMax}</p>`;
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
@@ -345,15 +346,17 @@ function printScore(deckId, isDoubleAce, playerName, scorePlayer) {
 
   if (isDoubleAce) {
     return `${playerName} win!`;
+  }  else if (player >= 22){
+    return "lost game";
   } else if (player == 21) {
     return `${playerName} win!`;
+  } else if(player < dealer && dealer > 22 ) {
+    return `${playerName} win!`;    
   } else if(player < dealer && dealer < 22 ) {
     return "lost game";    
   } else if(player > dealer && player < 22 ) {
     return `${playerName} win!`;
   } else if(player == dealer) {
     return "Push";
-  } else {
-    return "lost game";
   }  
 }
