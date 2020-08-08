@@ -231,9 +231,12 @@ function drawCard(deckId, isPlayer, playerName) {
           let cardValueSum = document.getElementById(`scorePlayer${playerName}`).innerHTML;     
           let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
           document.getElementById(`scorePlayer${playerName}`).innerHTML = `${cardNewValueSum}`;
-          if(cardNewValueSum >= 21) {
+          if(cardNewValueSum == 21) {
             standGame(deckId, playerName);
-          }          
+          } else if (cardNewValueSum >= 22) {
+            standGame(deckId, playerName);
+            showAlert(`${playerName} lost the game!`);
+          }       
         } else {
           let cardValueSum = document.getElementById('scoreDealer').innerHTML;     
           let cardNewValueSum = parseInt(cardValueSum) + cardValueNum;  
@@ -246,6 +249,20 @@ function drawCard(deckId, isPlayer, playerName) {
     }
 
   xmlHttp.send();
+}
+
+function showAlert(err) {
+  const form = document.getElementById('rowPlayer')
+  const container = document.querySelector('.card');
+  const alert = document.createElement('div');
+  alert.className = 'alert alert-danger';
+  alert.appendChild(document.createTextNode(err));
+
+  container.insertBefore(alert, form);
+
+  setTimeout(function() {
+    document.querySelector('.alert').remove();
+  }, 5000);
 }
 
 function createButtons(deckId, playerName) {
