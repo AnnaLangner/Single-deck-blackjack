@@ -17,10 +17,10 @@ function getShuffle(e) {
       const deckId = deck.deck_id;  
       document.getElementById('rowPlayer').style.visibility = "visible";
       document.getElementById('rowDealer').style.visibility = "visible";   
-      createButtons(deckId);      
-      getFirstTwoCards(deckId, true);
-      getFirstTwoCards(deckId, false);
-               
+      const playerName = "Player";
+      createButtons(deckId, playerName);      
+      getFirstTwoCards(deckId, true, playerName);
+      getFirstTwoCards(deckId, false);               
     }
   }
 
@@ -69,6 +69,8 @@ function getPlayers(e) {
   document.getElementById('rowDealer').style.visibility = "visible"; 
   document.getElementById('btn-start-game').style.display = 'block';
   document.getElementById('btn-single-player').style.visibility = "hidden";
+  document.getElementById('btn-multiplayer').style.visibility = "hidden";
+  
   document.getElementById('btn-start-game').addEventListener('click', startNewGame, {once : true})
     
   e.preventDefault();
