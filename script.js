@@ -1,10 +1,10 @@
-document.getElementById('btn-single-player').addEventListener('click', getShuffle, {once : true})
-document.getElementById('btn-multiplayer').addEventListener('click', getPlayers, {once : true})
+document.getElementById('btn-single-player').addEventListener('click', startSinglePlayer, {once : true})
+document.getElementById('btn-multiplayer').addEventListener('click', startMultiplayer, {once : true})
 
 const baseUrl = 'https://deckofcardsapi.com/api/deck/'
 let players = [];
 
-function getShuffle(e) {
+function startSinglePlayer(e) {
   const urlShuffleCards = `${baseUrl}new/shuffle/?deck_count=1`;
 
   const xmlHttp = new XMLHttpRequest();
@@ -30,7 +30,7 @@ function getShuffle(e) {
   e.preventDefault();
 }
 
-function getPlayers(e) {
+function startMultiplayer(e) {
   const cardBody = document.createElement('div');
   cardBody.className = 'card-body text-center';
   cardBody.setAttribute('id', 'cardBody')  
@@ -318,10 +318,10 @@ function cardValueMapping(cardValue) {
   }
 }
 
-function showModal(deckId, isDoubleAce) {
+function calculateScore(){
   let cardPlayerValueSum = '';  
-  let playerMax = '';
-  let scorePlayerMax = 0;
+  let playerMax = players[0];
+  let scorePlayerMax = document.getElementById(`scorePlayer${players[0]}`).innerText;;
   for(let i = 0; i < players.length; i++) {
     let scorePlayer = document.getElementById(`scorePlayer${players[i]}`).innerText;
     cardPlayerValueSum += `<h5>${players[i]}:</h5><p>Score: ${scorePlayer}</p>`;
@@ -330,7 +330,19 @@ function showModal(deckId, isDoubleAce) {
       playerMax = players[i]
     }
   }
-  cardPlayerValueSum = `<h5>${playerMax}:</h5><p>Score: ${scorePlayerMax}</p>`;
+
+  let player = {
+    playerName: playerMax,
+    playerScore: scorePlayerMax
+  }
+
+  let singlePlayer = Object.create(player);
+
+  return singlePlayer
+}
+
+function showModal(deckId, isDoubleAce) {  
+  const singlePlayer = calculateScore();
   const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
 
   const modalRefresh = document.createElement('div');
@@ -344,9 +356,9 @@ function showModal(deckId, isDoubleAce) {
         <h5 class="modal-title">Game summary</h5>
       </div>
       <div class="modal-body">
-        <p>${cardPlayerValueSum}</p>
+        <p><h5>${singlePlayer.playerName}:</h5><p>Score: ${singlePlayer.playerScore}</p></p>
         <p>${cardDealerValueSum}</p>
-        <p>${printScore(deckId, isDoubleAce, playerMax, scorePlayerMax)}</p>
+        <p>${getScore(deckId, isDoubleAce, singlePlayer.playerName, singlePlayer.playerScore)}</p>
       </div>
       <div class="modal-footer text-center">
         <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
@@ -357,7 +369,7 @@ function showModal(deckId, isDoubleAce) {
   document.querySelector('.container').appendChild(modalRefresh);
 }
 
-function printScore(deckId, isDoubleAce, playerName, scorePlayer) {
+function getScore(deckId, isDoubleAce, playerName, scorePlayer) {
   let player = scorePlayer;
   let dealer = document.getElementById('scoreDealer').innerText;
 
