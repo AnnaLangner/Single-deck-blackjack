@@ -53,6 +53,13 @@ function getPlayers(e) {
   divPlayer.appendChild(divBtnAddPlayer);
   
   cardBody.appendChild(divPlayer);
+
+  const btnStartGame = document.createElement('button');
+  btnStartGame.className = 'btn btn-primary btn-lg text-center';
+  btnStartGame.setAttribute('id', 'btn-start-game');
+  btnStartGame.innerHTML = 'Start game';
+
+  cardBody.appendChild(btnStartGame);
  
   document.getElementById('divListGroup').appendChild(cardBody);
         
@@ -319,7 +326,7 @@ function showModal(deckId, isDoubleAce) {
       <div class="modal-body">
         <p>${cardPlayerValueSum}</p>
         <p>${cardDealerValueSum}</p>
-        <p>${printScore(deckId, isDoubleAce, playerMax, cardPlayerValueSum, cardDealerValueSum)}</p>
+        <p>${printScore(deckId, isDoubleAce, playerMax, scorePlayerMax)}</p>
       </div>
       <div class="modal-footer text-center">
         <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
@@ -330,21 +337,21 @@ function showModal(deckId, isDoubleAce) {
   document.querySelector('.container').appendChild(modalRefresh);
 }
 
-function printScore(deckId, isDoubleAce, playerName, cardPlayerValueSum, cardDealerValueSum) {
+function printScore(deckId, isDoubleAce, playerName, scorePlayer) {
+  let player = scorePlayer;
+  let dealer = document.getElementById('scoreDealer').innerText;
+
   if (isDoubleAce) {
-    return "You win";
-  } else if(cardPlayerValueSum >= 22) {
-    return "You lose";
-  } else if (cardPlayerValueSum == 21) {
-    return "You win!";
-  } else if(cardPlayerValueSum > cardDealerValueSum) {
-    return "You win!";
-  } else if(cardPlayerValueSum < cardDealerValueSum && cardDealerValueSum < 22 ) {
-    return "You lose";    
-  } else if(cardPlayerValueSum < cardDealerValueSum && cardDealerValueSum > 21 ) {
-    return "You win!";
-  } else if(cardPlayerValueSum == cardDealerValueSum) {
+    return `${playerName} win!`;
+  } else if (player == 21) {
+    return `${playerName} win!`;
+  } else if(player < dealer && dealer < 22 ) {
+    return "lost game";    
+  } else if(player > dealer && player < 22 ) {
+    return `${playerName} win!`;
+  } else if(player == dealer) {
     return "Push";
-  }
-  
+  } else {
+    return "lost game";
+  }  
 }
