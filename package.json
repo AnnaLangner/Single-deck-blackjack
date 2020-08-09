@@ -29,7 +29,6 @@
   "devDependencies": {
     "@types/mocha": "^8.0.1",
     "@types/node": "^14.0.27",
-    "@types/serve-static": "^1.13.5",
     "mocha": "^8.1.1",
     "ts-node": "^8.10.2",
     "typings": "^2.1.1"

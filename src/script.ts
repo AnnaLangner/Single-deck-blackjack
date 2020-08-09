@@ -41,7 +41,6 @@ function startSinglePlayer(e:MouseEvent) {
       document.getElementById('btn-single-player').style.display = "none";
       document.getElementById('btn-multiplayer').style.display = "none";
       document.getElementById('rowPlayer').style.visibility = "visible";
-      document.getElementById('rowDealer').style.visibility = "visible";   
       const playerName:string = "Player";
       players.push(playerName)
       createButtons(deckId, playerName);      
@@ -81,7 +80,7 @@ function startMultiplayer(e:MouseEvent) {
   cardBody.appendChild(divPlayer);
 
   const btnStartGame = document.createElement('button');
-  btnStartGame.className = 'btn btn-primary btn-lg text-center';
+  btnStartGame.className = 'btn btn-primary btn-lg btn-block';
   btnStartGame.setAttribute('id', 'btn-start-game');
   btnStartGame.innerHTML = 'Start game';
 
@@ -91,8 +90,6 @@ function startMultiplayer(e:MouseEvent) {
         
   btnAddPlayer.addEventListener('click', addPlayer);
 
-  document.getElementById('rowPlayer').style.visibility = "visible";
-  document.getElementById('rowDealer').style.visibility = "visible"; 
   document.getElementById('btn-start-game').style.display = 'block';
   document.getElementById('btn-single-player').style.visibility = "hidden";
   document.getElementById('btn-multiplayer').style.visibility = "hidden";
@@ -158,7 +155,8 @@ function startNewGame() {
         alert('Refresh game and add Players');
         return;
       }
-
+      document.getElementById('rowPlayer').style.visibility = "visible";
+      document.getElementById('rowDealer').style.visibility = "visible"; 
       document.getElementById('tablePlayer').style.visibility = "visible";
       document.getElementById('tableDealer').style.visibility = "visible";
       document.getElementById('cardBody').style.display = "none";
