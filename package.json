@@ -10,15 +10,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AnnaLangner/ProfilSoftwar_frontend_task.git"
+    "url": "git+https://github.com/AnnaLangner/ProfilSoftware_frontend_task.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task/issues"
+    "url": "https://github.com/AnnaLangner/ProfilSoftware_frontend_task/issues"
   },
-  "homepage": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task#readme",
+  "homepage": "https://github.com/AnnaLangner/ProfilSoftware_frontend_task#readme",
   "dependencies": {
     "bootstrap-icons": "^1.0.0-alpha5",
     "common-js": "^0.3.8",
