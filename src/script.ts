@@ -339,8 +339,8 @@ function standGame(deckId:string, playerName:string) {
 
 function findHighestScore(){
   let cardPlayerValueSum = '';  
-  let playerMax = players[0];
-  let scorePlayerMax = parseInt(document.getElementById(`scorePlayer${players[0]}`).innerText);
+  let playerMax = '';
+  let scorePlayerMax = 0;
   for(let i = 0; i < players.length; i++) {
     let scorePlayer = parseInt(document.getElementById(`scorePlayer${players[i]}`).innerText);
     cardPlayerValueSum += `<h5>${players[i]}:</h5><p>Score: ${scorePlayer}</p>`;
@@ -363,6 +363,11 @@ function findHighestScore(){
 function showModal(isDoubleAce:boolean) {  
   const singlePlayer = findHighestScore();
   let dealerScore = parseInt(document.getElementById('scoreDealer').innerText);
+  let playerScore = `<h5>${singlePlayer.playerName}:</h5><p>Score: ${singlePlayer.playerScore}</p>`;
+
+  if(singlePlayer.playerScore == 0) {
+    playerScore = '';
+  }
 
   const modalRefresh = document.createElement('div');
   modalRefresh.className = 'modal fade show';
@@ -376,7 +381,7 @@ function showModal(isDoubleAce:boolean) {
         <h5 class="modal-title">Game summary</h5>
       </div>
       <div class="modal-body">
-        <p><h5>${singlePlayer.playerName}:</h5><p>Score: ${singlePlayer.playerScore}</p></p>
+        <p>${playerScore}</p>
         <p><h5>Dealer: </h5><p>Score: ${dealerScore}</p></p>
         <p>${getScore(isDoubleAce, singlePlayer.playerName, singlePlayer.playerScore, dealerScore)}</p>
       </div>

@@ -19,7 +19,7 @@ export function getScore(isDoubleAce:boolean, playerName:string, playerScore:num
     return "lost game";
   } else if (playerScore == 21) {
     return `${playerName} win!`;
-  } else if(playerScore < dealerScore && dealerScore > 22 ) {
+  } else if(playerScore !=0 && dealerScore > 22 ) {
     return `${playerName} win!`;    
   } else if(playerScore < dealerScore && dealerScore < 22 ) {
     return "lost game";    
@@ -27,5 +27,7 @@ export function getScore(isDoubleAce:boolean, playerName:string, playerScore:num
     return `${playerName} win!`;
   } else if(playerScore == dealerScore) {
     return "Push";
-  }  
+  } else {
+    return "lost game";  
+  }
 }

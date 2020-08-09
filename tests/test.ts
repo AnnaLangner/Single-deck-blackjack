@@ -1,5 +1,5 @@
 const assert = require('assert').strict;
-import {cardValueMapping, getScore} from '../src/utilsFunctions.js';
+import {cardValueMapping, getScore} from '../src/utilsFunctions';
 
 describe('testedScript', () => {
   describe('cardValueMapping', () => {
@@ -68,6 +68,12 @@ describe('testedScript', () => {
     it('should return push, when player and dealer has equals score', () => {
       const actual = getScore(false, 'Test', 20, 20);
       const expected = 'Push';
+      
+      assert.strictEqual(actual, expected);
+    });
+    it('should return player lost game, when player has 0 points and dealer score is higher than 21', () => {
+      const actual = getScore(false, 'Test', 0, 25);
+      const expected = 'lost game';
       
       assert.strictEqual(actual, expected);
     });
