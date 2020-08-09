@@ -339,7 +339,7 @@ function cardValueMapping(cardValue:string) {
   }
 }
 
-function calculateScore(){
+function findHighestScore(){
   let cardPlayerValueSum = '';  
   let playerMax = players[0];
   let scorePlayerMax = parseInt(document.getElementById(`scorePlayer${players[0]}`).innerText);
@@ -363,12 +363,13 @@ function calculateScore(){
 }
 
 function showModal(isDoubleAce:boolean) {  
-  const singlePlayer = calculateScore();
-  const cardDealerValueSum = document.getElementById('dealerScore').innerHTML;
+  const singlePlayer = findHighestScore();
+  let dealerScore = parseInt(document.getElementById('scoreDealer').innerText);
 
   const modalRefresh = document.createElement('div');
   modalRefresh.className = 'modal fade show';
   modalRefresh.setAttribute("id", "refreshModal"); 
+
 
   modalRefresh.innerHTML = `
   <div class="modal-dialog">
@@ -378,8 +379,8 @@ function showModal(isDoubleAce:boolean) {
       </div>
       <div class="modal-body">
         <p><h5>${singlePlayer.playerName}:</h5><p>Score: ${singlePlayer.playerScore}</p></p>
-        <p>${cardDealerValueSum}</p>
-        <p>${getScore(isDoubleAce, singlePlayer.playerName, singlePlayer.playerScore)}</p>
+        <p><h5>Dealer: </h5><p>Score: ${dealerScore}</p></p>
+        <p>${getScore(isDoubleAce, singlePlayer.playerName, singlePlayer.playerScore, dealerScore)}</p>
       </div>
       <div class="modal-footer text-center">
         <button type="button" class="btn btn-primary" onClick="window.location.reload();">Refresh</button>
@@ -390,23 +391,20 @@ function showModal(isDoubleAce:boolean) {
   document.querySelector('.container').appendChild(modalRefresh);
 }
 
-function getScore(isDoubleAce:boolean, playerName:string, scorePlayer:number) {
-  let player = scorePlayer;
-  let dealer = parseInt(document.getElementById('scoreDealer').innerText);
-
-  if (isDoubleAce) {
+function getScore(isDoubleAce:boolean, playerName:string, playerScore:number, dealerScore:number) {
+    if (isDoubleAce) {
     return `${playerName} win!`;
-  }  else if (player >= 22){
+  }  else if (playerScore >= 22){
     return "lost game";
-  } else if (player == 21) {
+  } else if (playerScore == 21) {
     return `${playerName} win!`;
-  } else if(player < dealer && dealer > 22 ) {
+  } else if(playerScore < dealerScore && dealerScore > 22 ) {
     return `${playerName} win!`;    
-  } else if(player < dealer && dealer < 22 ) {
+  } else if(playerScore < dealerScore && dealerScore < 22 ) {
     return "lost game";    
-  } else if(player > dealer && player < 22 ) {
+  } else if(playerScore > dealerScore && playerScore < 22 ) {
     return `${playerName} win!`;
-  } else if(player == dealer) {
+  } else if(playerScore == dealerScore) {
     return "Push";
   }  
 }
