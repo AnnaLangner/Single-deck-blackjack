@@ -4,6 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "init": "npm install && npx tsc",
+    "start": "node src/server.ts",
     "test": "mocha -r ts-node/register tests/**/test.ts"
   },
   "repository": {
@@ -19,6 +21,8 @@
   "homepage": "https://github.com/AnnaLangner/ProfilSoftwar_frontend_task#readme",
   "dependencies": {
     "bootstrap-icons": "^1.0.0-alpha5",
+    "connect": "^3.7.0",
+    "serve-static": "^1.14.1",
     "typescript": "^3.9.7"
   },
   "devDependencies": {
