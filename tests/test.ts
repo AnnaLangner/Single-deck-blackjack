@@ -1,5 +1,5 @@
 const assert = require('assert').strict;
-import {cardValueMapping, getScore} from '../src/utilsFunctions';
+import {cardValueMapping, getScore} from '../src/utilsFunctions.js';
 
 describe('testedScript', () => {
   describe('cardValueMapping', () => {
