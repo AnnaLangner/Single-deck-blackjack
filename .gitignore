@@ -25,6 +25,4 @@ node_modules
 
 #typeScript
 *.js
-
-#dist
-dist
+*.js.map

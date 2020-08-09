@@ -1,4 +1,4 @@
-import {cardValueMapping, getScore} from './utilsFunctions';
+import {cardValueMapping, getScore} from './utilsFunctions.js';
 
 document.getElementById('btn-single-player').addEventListener('click', startSinglePlayer, {once : true})
 document.getElementById('btn-multiplayer').addEventListener('click', startMultiplayer, {once : true})
@@ -38,6 +38,8 @@ function startSinglePlayer(e:MouseEvent) {
     if(this.status === 200){
       const deck:ShuffleResponse = JSON.parse(this.responseText);
       const deckId:string = deck.deck_id;  
+      document.getElementById('btn-single-player').style.display = "none";
+      document.getElementById('btn-multiplayer').style.display = "none";
       document.getElementById('rowPlayer').style.visibility = "visible";
       document.getElementById('rowDealer').style.visibility = "visible";   
       const playerName:string = "Player";
@@ -95,7 +97,7 @@ function startMultiplayer(e:MouseEvent) {
   document.getElementById('btn-single-player').style.visibility = "hidden";
   document.getElementById('btn-multiplayer').style.visibility = "hidden";
   
-  document.getElementById('btn-start-game').addEventListener('click', startNewGame, {once : true})
+  document.getElementById('btn-start-game').addEventListener('click', startNewGame)
     
   e.preventDefault();
 }
@@ -149,11 +151,19 @@ function startNewGame() {
     if(this.status === 200){
       const deck = JSON.parse(this.responseText);
       const deckId = deck.deck_id; 
+
+      let list = document.getElementById('listOfPlayers').getElementsByTagName('li')
+      if(list.length < 1) {
+        (<HTMLInputElement>document.getElementById("btn-start-game")).disabled = true;
+        alert('Refresh game and add Players');
+        return;
+      }
+
       document.getElementById('tablePlayer').style.visibility = "visible";
       document.getElementById('tableDealer').style.visibility = "visible";
       document.getElementById('cardBody').style.display = "none";
       document.getElementById('listOfPlayers').style.display = "none";
-      document.getElementById('btn-start-game').style.display = "none";   
+      document.getElementById('btn-start-game').style.display = "none";       
       
       for(let i = 0; i < players.length; i++) {
         getFirstTwoCards(deckId, true, players[i]);

@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "allowJs": false,
   "compilerOptions": {
-    "outDir": "./dist/out-tsc",
+    "module": "es6",
     "baseUrl": ".",
     "paths": {
       "*": ["./node_modules/*", "*"]
