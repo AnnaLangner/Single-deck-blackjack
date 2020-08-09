@@ -5,7 +5,6 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "init": "npm install && npx tsc",
     "start": "npx tsc && http-server -o src/index.html",
     "test": "npx tsc && mocha tests/**/*.js"
   },

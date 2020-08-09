@@ -54,10 +54,10 @@ Blackjack -a simple card game where you draw cards so far in order to get the nu
 
 *To run this project, install it locally using npm:*
 ```
-$ npm run init
+$ npm install
 $ npm run start 
 ```
-After this comand application is runing on localhost on port 3000
+
 
 *To run tests, use comand below*
 
