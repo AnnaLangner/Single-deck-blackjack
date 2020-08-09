@@ -2,7 +2,7 @@
 
 
 
-This is simple Blackjack app based on JavaScript, HTML, CSS and free API https://deckofcardsapi.com/.
+This is simple Blackjack app based on TypeScript, HTML, CSS and free API https://deckofcardsapi.com/.
 
 
 
@@ -42,7 +42,7 @@ Blackjack -a simple card game where you draw cards so far in order to get the nu
 
 *Project is created with:*
 
-* JavaScript, 
+* TypeScript, 
 * HTML, 
 * CSS,
 * Bootstrap 4,
@@ -53,5 +53,14 @@ Blackjack -a simple card game where you draw cards so far in order to get the nu
 
 
 *To run this project, install it locally using npm:*
+```
+$ npm run init
+$ npm run start 
+```
+After this comand application is runing on localhost on port 3000
 
+*To run tests, use comand below*
 
+```
+$ nmp run test
+```
